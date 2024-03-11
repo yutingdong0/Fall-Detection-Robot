@@ -1,3 +1,4 @@
+import math
 import cv2
 import time
 import torch
@@ -50,7 +51,7 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
 
         while(cap.isOpened): #loop until cap opened or video not complete
         
-            print("Frame {} Processing".format(frame_count+1))
+            # print("Frame {} Processing".format(frame_count+1))
 
             ret, frame = cap.read()  #get frame and success from video capture
             
@@ -78,6 +79,49 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
             
                 output = output_to_keypoint(output_data)
 
+
+
+
+                #Apply non max suppression
+                # output = non_max_suppression_kpt(output, 0.25, 0.65, nc=model.yaml['nc'], nkpt=model.yaml['nkpt'], kpt_label=True)
+                # output = output_to_keypoint(output)
+                image0 = image[0].permute(1, 2, 0) * 255
+                image0 = image0.cpu().numpy().astype(np.uint8)
+        
+                #reshape image format to (BGR)
+                image0 = cv2.cvtColor(image0, cv2.COLOR_RGB2BGR)
+                for idx in range(output.shape[0]):
+                    #plot_skeleton_kpts(image0, output[idx, 7:].T, 3)
+                    xmin, ymin = (output[idx, 2]-output[idx, 4]/2), (output[idx, 3]-output[idx, 5]/2)
+                    xmax, ymax = (output[idx, 2]+output[idx, 4]/2), (output[idx, 3]+output[idx, 5]/2)
+
+                    left_shoulder_y= output[idx][23]
+                    left_shoulder_x= output[idx][22]
+                    right_shoulder_y= output[idx][26]
+            
+                    left_body_y = output[idx][41]
+                    left_body_x = output[idx][40]
+                    right_body_y = output[idx][44]
+
+                    len_factor = math.sqrt(((left_shoulder_y - left_body_y)**2 + (left_shoulder_x - left_body_x)**2 ))
+
+                    left_foot_y = output[idx][53]
+                    right_foot_y = output[idx][56]
+            
+                    if left_shoulder_y > left_foot_y - len_factor and left_body_y > left_foot_y - (len_factor / 2) and left_shoulder_y > left_body_y - (len_factor / 2):
+                    #Plotting key points on Image
+                        cv2.rectangle(image0,(int(xmin), int(ymin)),(int(xmax), int(ymax)),color=(0, 0, 255),
+                        thickness=5,lineType=cv2.LINE_AA)
+                        cv2.putText(image0, 'Person Fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+                    else:
+                        cv2.putText(image0, 'Person not Fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+
+
+
+
+
+
+
                 im0 = image[0].permute(1, 2, 0) * 255 # Change format [b, c, h, w] to [h, w, c] for displaying the image.
                 im0 = im0.cpu().numpy().astype(np.uint8)
                 
@@ -89,7 +133,7 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                     if len(output_data):  #check if no pose
                         for c in pose[:, 5].unique(): # Print results
                             n = (pose[:, 5] == c).sum()  # detections per class
-                            print("No of Objects in Current Frame : {}".format(n))
+                            # print("No of Objects in Current Frame : {}".format(n))
                         
                         for det_index, (*xyxy, conf, cls) in enumerate(reversed(pose[:,:6])): #loop over poses for drawing on frame
                             c = int(cls)  # integer class
@@ -110,10 +154,10 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                 
                 # Stream results
                 if view_img:
-                    cv2.imshow("YOLOv7 Pose Estimation Demo", im0)
+                    cv2.imshow("YOLOv7 Pose Estimation Demo", image0)
                     cv2.waitKey(1)  # 1 millisecond
 
-                out.write(im0)  #writing the video frame
+                out.write(image0)  #writing the video frame
 
             else:
                 break
