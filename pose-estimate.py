@@ -49,8 +49,13 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                             cv2.VideoWriter_fourcc(*'mp4v'), 30,
                             (resize_width, resize_height))
 
+        person_fell_down = False  # Flag to track if person fell down
+
         while(cap.isOpened): #loop until cap opened or video not complete
-        
+            
+            # Flag to track whether the person fall down in this frame
+            condition_to_detect_fall_down = False
+
             # print("Frame {} Processing".format(frame_count+1))
 
             ret, frame = cap.read()  #get frame and success from video capture
@@ -79,10 +84,8 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
             
                 output = output_to_keypoint(output_data)
 
-
-
-
-                #Apply non max suppression
+                # Fall detection part
+                # Apply non max suppression
                 # output = non_max_suppression_kpt(output, 0.25, 0.65, nc=model.yaml['nc'], nkpt=model.yaml['nkpt'], kpt_label=True)
                 # output = output_to_keypoint(output)
                 image0 = image[0].permute(1, 2, 0) * 255
@@ -112,13 +115,23 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                     #Plotting key points on Image
                         cv2.rectangle(image0,(int(xmin), int(ymin)),(int(xmax), int(ymax)),color=(0, 0, 255),
                         thickness=5,lineType=cv2.LINE_AA)
-                        cv2.putText(image0, 'Person Fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+                        cv2.putText(image0, 'Person fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+                        condition_to_detect_fall_down = True
                     else:
-                        cv2.putText(image0, 'Person not Fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+                        cv2.putText(image0, 'Person not fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
+                        condition_to_detect_fall_down = False
 
-
-
-
+                    if condition_to_detect_fall_down:
+                        if not person_fell_down:  # Check if person hasn't fallen down already
+                        # Person fell down, so use NotifyRecordParse class
+                            notify = NotifyRecordParse()
+                            if notify.activate():
+                                print("Call needed!") 
+                            else:
+                                print("Call not needed.")  
+                                person_fell_down = True  # Set flag to indicate person fell down
+                    else:
+                        person_fell_down = False  # Reset flag if person is not detected to have fallen down
 
 
 
