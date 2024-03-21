@@ -16,9 +16,10 @@ from utils.general import non_max_suppression_kpt,strip_optimizer,xyxy2xywh
 from utils.plots import output_to_keypoint, plot_skeleton_kpts,colors,plot_one_box_kpt
 
 @torch.no_grad()
-def run(poseweights="yolov7-w6-pose.pt",source='0',device='0',view_img=True,
+def run(poseweights="yolov7-w6-pose.pt",source = "0",device='0',view_img=True,
         save_conf=False,line_thickness = 3,hide_labels=False, hide_conf=True):
 
+    view_img=True
     
     device = select_device(opt.device) #select device
     half = device.type != 'cpu'
@@ -173,8 +174,8 @@ def run(poseweights="yolov7-w6-pose.pt",source='0',device='0',view_img=True,
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--poseweights', nargs='+', type=str, default='yolov7-w6-pose.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='football1.mp4', help='video/0 for webcam') #video source
-    parser.add_argument('--device', type=str, default='cpu', help='cpu/0,1,2,3(gpu)')   #device arugments
+    parser.add_argument('--source', type=str, default='0', help='video/0 for webcam') #video source
+    parser.add_argument('--device', type=str, default='0', help='cpu/0,1,2,3(gpu)')   #device arugments
     parser.add_argument('--view-img', action='store_true', help='display results')  #display results
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels') #save confidence in txt writing
     parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)') #box linethickness
