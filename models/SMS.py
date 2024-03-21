@@ -12,7 +12,7 @@ class TwilioSMS:
 
         message = client.messages \
                         .create(
-                            body="Emergency message: A fall is detected in your house!",
+                            body="Emergency message: A fall is detected in your house! Name: Johnny. Date of Birth: April 4, 1950. Location: 5612 LW, Eindhoven.",
                             from_='+18053015048',
                             to='+31613519355'
                         )
