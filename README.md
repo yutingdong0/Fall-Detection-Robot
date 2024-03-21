@@ -9,7 +9,7 @@
 
 - Goto the cloned folder.
 - Create a virtual envirnoment (Recommended, If you dont want to disturb python packages)
-
+- Install ffmpeg
 - Upgrade pip with mentioned command below.
 ```
 pip install --upgrade pip
@@ -26,28 +26,28 @@ pip install -r requirements.txt
 
 - Run the code with mentioned command below.
 ```
-python pose-estimate.py
+python main.py
 
 #if you want to change source file
-python pose-estimate.py --source "your custom video.mp4"
+python main.py --source "your custom video.mp4"
 
 #For CPU
-python pose-estimate.py --source "your custom video.mp4" --device cpu
+python main.py --source "your custom video.mp4" --device cpu
 
 #For GPU
-python pose-estimate.py --source "your custom video.mp4" --device 0
+python main.py --source "your custom video.mp4" --device 0
 
 #For View-Image
-python pose-estimate.py --source "your custom video.mp4" --device 0 --view-img
+python main.py --source "your custom video.mp4" --device 0 --view-img
 
 #For LiveStream (Ip Stream URL Format i.e "rtsp://username:pass@ipaddress:portno/video/video.amp")
-python pose-estimate.py --source "your IP Camera Stream URL" --device 0 --view-img
+python main.py --source "your IP Camera Stream URL" --device 0 --view-img
 
 #For WebCam
-python pose-estimate.py --source 0 --view-img
+python main.py --source 0 --view-img
 
 #For External Camera
-python pose-estimate.py --source 1 --view-img
+python main.py --source 1 --view-img
 ```
 
 - Output file will be created in the working directory with name <b>["your-file-name-without-extension"+"_keypoint.mp4"]</b>
