@@ -30,3 +30,6 @@ thop  # FLOPs computation
 # Voice commands
 pyaudio
 openai-whisper
+
+# Voice call and SMS
+twilio
