@@ -1,0 +1,54 @@
+# Import necessary libraries and modules
+import camera_module
+import fall_detection_model
+import notifyRecordParse.notifyRecordParse
+import models.CALL
+import models.SMS
+import models.VoIPCALL
+
+def main():
+    # Initialize camera module
+    camera = camera_module.Camera()
+
+    # Initialize models
+    fall_detector = fall_detection_model.FallDetector()
+    voice_command = notifyRecordParse.notifyRecordParse.VoiceCommandDetector()
+    call_nonwifi = models.CALL.Call()
+    SMS = models.SMS.SMS()
+    VoIPCALL = models.VoIPCALL.VoIPCALL()
+
+    # Main loop
+    while True:
+        # Capture input from camera
+        frame = camera.capture_frame()
+
+        # Detect if fall occurs
+        fall_detected = fall_detector.detect_fall(frame)
+
+        if fall_detected:
+            # Ask the user if they need emergency assistance
+            voice_input = voice_command.listen_for_command()
+
+            if "yes" in voice_input.answer():
+                # Try VoIP call first
+                if VoIPCALL.make_call():
+                    # VoIP call successful
+                    continue
+                else:
+                    # VoIP call unsuccessful, try normal call
+                    if call_nonwifi.make_call():
+                        # Normal call successful
+                        continue
+                    else:
+                        # Normal call unsuccessful, send SMS
+                        SMS.send_sms()
+                
+            elif "no" in voice_input.answer():
+                # Do nothing, continue detections
+                continue
+            else:
+                # If unrecognized command, continue detections
+                continue
+
+if __name__ == "__main__":
+    main()
