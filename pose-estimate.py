@@ -122,17 +122,17 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                         cv2.putText(image0, 'Person not fell down', (11, 100), 0, 1, [0, 0, 2550], thickness=3, lineType=cv2.LINE_AA)
                         condition_to_detect_fall_down = False
 
-                    if condition_to_detect_fall_down:
-                        if not person_fell_down:  # Check if person hasn't fallen down already
-                        # Person fell down, so use NotifyRecordParse class
-                            notify = NotifyRecordParse()
-                            if notify.activate():
-                                print("Call needed!") 
-                            else:
-                                print("Call not needed.")  
-                                person_fell_down = True  # Set flag to indicate person fell down
-                    else:
-                        person_fell_down = False  # Reset flag if person is not detected to have fallen down
+                    # if condition_to_detect_fall_down:
+                    #     if not person_fell_down:  # Check if person hasn't fallen down already
+                    #     # Person fell down, so use NotifyRecordParse class
+                    #         notify = NotifyRecordParse()
+                    #         if notify.activate():
+                    #             print("Call needed!") 
+                    #         else:
+                    #             print("Call not needed.")  
+                    #             person_fell_down = True  # Set flag to indicate person fell down
+                    # else:
+                    #     person_fell_down = False  # Reset flag if person is not detected to have fallen down
 
 
 
@@ -172,6 +172,18 @@ def run(poseweights="yolov7-w6-pose.pt",source="football1.mp4",device='cpu',view
                     cv2.waitKey(1)  # 1 millisecond
 
                 out.write(image0)  #writing the video frame
+
+                if condition_to_detect_fall_down:
+                        if not person_fell_down:  # Check if person hasn't fallen down already
+                        # Person fell down, so use NotifyRecordParse class
+                            notify = NotifyRecordParse()
+                            if notify.activate():
+                                print("Call needed!") 
+                            else:
+                                print("Call not needed.")  
+                                person_fell_down = True  # Set flag to indicate person fell down
+                else:
+                    person_fell_down = False  # Reset flag if person is not detected to have fallen down
 
             else:
                 break
