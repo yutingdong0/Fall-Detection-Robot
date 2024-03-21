@@ -6,8 +6,8 @@ import sys
 class NotifyRecordParse:
     CHUNK = 1024
 
-    def __init__(self):
-        FILENAME = "prompt.wav"
+    def initialize(self):
+        FILENAME = "notifyRecordParse\prompt.wav"
         self.wf = wave.open(FILENAME, 'rb')
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(
@@ -20,6 +20,7 @@ class NotifyRecordParse:
     def activate(self):
         FILENAME = "prompt.wav"
         REPLY = "reply.wav"
+        self.initialize()
         self.play()
         self.stop()
         self.startRecording(REPLY)
@@ -75,10 +76,12 @@ class NotifyRecordParse:
         return transcription["text"]
     
     def isCallNeeded(self, response):
-        if "yes" in response:
+        response_lowercase = response.lower()
+        print(response_lowercase)
+        if "yes" in response_lowercase or not response_lowercase:
             return True
         else:
             return False
 
-a = NotifyRecordParse()
-print(a.activate())
+# a = NotifyRecordParse()
+# print(a.activate())
