@@ -42,8 +42,8 @@ def run(poseweights="yolov7-w6-pose.pt", device='0', view_img=True,
 
         person_fell_down = False  # Flag to track if person fell down
 
-        orig_image = cv_image  # store frame
-        image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB)  # convert frame to RGB
+        image = cv_image  # store frame
+        # image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB)  # convert frame to RGB
         frame_width = image.shape[1]  # Get the width of the frames
         frame_height = image.shape[0]  # Get the height of the frames
 
@@ -154,6 +154,7 @@ def run(poseweights="yolov7-w6-pose.pt", device='0', view_img=True,
             else:
                 person_fell_down = False  # Reset flag if person is not detected to have fallen down
 
+    cv2.waitKey(1000)
     rospy.Subscriber("/hero/head_rgbd_sensor/rgb/image_raw", Image, image_callback)
 
     # Spin to keep the script from exiting until the node is shutdown
@@ -162,7 +163,7 @@ def run(poseweights="yolov7-w6-pose.pt", device='0', view_img=True,
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument('--poseweights', nargs='+', type=str, default='yolov7-w6-pose.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default='0', help='video/0 for webcam') #video source
+    #parser.add_argument('--source', type=str, default='0', help='video/0 for webcam') #video source
     parser.add_argument('--device', type=str, default='0', help='cpu/0,1,2,3(gpu)')   #device arugments
     parser.add_argument('--view-img', action='store_true', help='display results')  #display results
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels') #save confidence in txt writing

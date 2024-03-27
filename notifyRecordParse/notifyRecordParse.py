@@ -7,7 +7,7 @@ class NotifyRecordParse:
     CHUNK = 1024
 
     def initialize(self):
-        FILENAME = "notifyRecordParse\prompt.wav"
+        FILENAME = "notifyRecordParse//prompt.wav"
         self.wf = wave.open(FILENAME, 'rb')
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(
